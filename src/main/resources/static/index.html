@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Inventory & Order Fulfillment System - DSA Project</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="brand-section">
+                <div class="logo-badge">RISU</div>
+                <div class="title-wrap">
+                    <h1>Smart Inventory &amp; Order Fulfillment System</h1>
+                    <p class="subtitle">B.Tech CSE (AI-ML) &bull; DSA Project &bull; Arif Ansari (RU-26-02883)</p>
+                </div>
+            </div>
+            <div class="badge-dsa-wrap">
+                <span class="dsa-pill hashmap-pill">HashMap: O(1) Lookup</span>
+                <span class="dsa-pill heap-pill">Min-Heap: O(1) Restock Alert</span>
+                <span class="dsa-pill queue-pill">FIFO Queue: Order Dispatch</span>
+                <span class="dsa-pill stack-pill">LIFO Stack: O(1) Undo</span>
+            </div>
+        </header>
+
+        <!-- KPI Summary Cards -->
+        <section class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-title">Catalog Size</div>
+                <div class="kpi-val" id="kpi-total-items">0</div>
+                <div class="kpi-desc">Indexed in HashMap</div>
+            </div>
+            <div class="kpi-card warning-card">
+                <div class="kpi-title">Critical Low Stock</div>
+                <div class="kpi-val warning-text" id="kpi-low-stock">0</div>
+                <div class="kpi-desc">Prioritized via Min-Heap</div>
+            </div>
+            <div class="kpi-card queue-card">
+                <div class="kpi-title">Pending Orders</div>
+                <div class="kpi-val" id="kpi-pending-orders">0</div>
+                <div class="kpi-desc">In FIFO Queue</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Total Inventory Valuation</div>
+                <div class="kpi-val" id="kpi-total-val">&#8377;0</div>
+                <div class="kpi-desc">Real-time asset value</div>
+            </div>
+        </section>
+
+        <!-- Low Stock Priority Alert Banner -->
+        <section class="alert-section" id="alertSection">
+            <div class="alert-header">
+                <div class="alert-title-group">
+                    <span class="alert-icon">&#9888;</span>
+                    <h3>Priority Restock Queue (Min-Heap Root Ordering)</h3>
+                </div>
+                <span class="badge-count" id="alertCountBadge">0 Critical Items</span>
+            </div>
+            <div class="alert-chips-container" id="alertChips">
+                <!-- Dynamically injected low stock chips -->
+            </div>
+        </section>
+
+        <!-- Order Fulfillment (FIFO Queue) & Undo Action (LIFO Stack) Section -->
+        <section class="operations-grid">
+            <!-- FIFO Queue Panel -->
+            <div class="op-panel queue-panel">
+                <div class="panel-header">
+                    <div>
+                        <h3>Customer Order Queue (FIFO)</h3>
+                        <p class="panel-subtitle">Orders processed in arrival sequence; automatically decrements inventory</p>
+                    </div>
+                    <div class="panel-btns">
+                        <button id="openOrderModalBtn" class="btn-sm btn-primary">+ Place Order</button>
+                        <button id="processOrderBtn" class="btn-sm btn-success">&#9658; Dispatch Next</button>
+                    </div>
+                </div>
+                <div class="queue-list-wrap" id="orderQueueContainer">
+                    <!-- Injected orders -->
+                </div>
+            </div>
+
+            <!-- LIFO Stack Panel -->
+            <div class="op-panel stack-panel">
+                <div class="panel-header">
+                    <div>
+                        <h3>Stock Transaction History (LIFO Stack)</h3>
+                        <p class="panel-subtitle">Audit trail of quantity adjustments with 1-click reversal</p>
+                    </div>
+                    <button id="undoBtn" class="btn-sm btn-warning">&#8630; Undo Last Action</button>
+                </div>
+                <div class="stack-list-wrap" id="transactionStackContainer">
+                    <!-- Injected transactions -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Toolbar -->
+        <section class="toolbar-section">
+            <div class="search-box-container">
+                <input type="text" id="searchInput" placeholder="Search by SKU (e.g., 'PRD101') or Product Name..." autocomplete="off">
+                <button id="clearSearchBtn" class="btn-clear" title="Clear search">&times;</button>
+            </div>
+            <div class="action-buttons">
+                <select id="categoryFilter" class="filter-select">
+                    <option value="ALL">All Categories</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Accessories">Accessories</option>
+                    <option value="Furniture">Furniture</option>
+                    <option value="Audio">Audio</option>
+                </select>
+                <button id="filterLowStockBtn" class="btn-secondary">Show Low Stock Only</button>
+                <button id="resetFilterBtn" class="btn-secondary">Show All</button>
+                <button id="openAddModalBtn" class="btn-primary">+ Add Product</button>
+            </div>
+        </section>
+
+        <!-- Inventory Data Table -->
+        <section class="table-card">
+            <div class="table-header">
+                <h2>Warehouse Inventory Catalog (HashMap)</h2>
+                <span class="table-count-label" id="tableCountLabel">Showing 0 products</span>
+            </div>
+            <div class="table-responsive">
+                <table class="inventory-table">
+                    <thead>
+                        <tr>
+                            <th>Product ID (Key)</th>
+                            <th>Product Name</th>
+                            <th>Category</th>
+                            <th>Stock Quantity</th>
+                            <th>Safety Limit</th>
+                            <th>Unit Price</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryTableBody">
+                        <!-- Populated by script.js -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- DSA Explainer Card -->
+        <section class="dsa-explainer-card">
+            <h3>Underlying Data Structures &amp; Complexity Overview</h3>
+            <div class="dsa-panels-grid">
+                <div class="panel-box">
+                    <h4>1. HashMap (Product Catalog)</h4>
+                    <p>Maps <code>productId &rarr; Product</code>. Provides <strong>O(1) average time</strong> for instant SKU lookups, stock updates, and removals during checkout.</p>
+                </div>
+                <div class="panel-box">
+                    <h4>2. Min-Heap Priority Queue</h4>
+                    <p>Orders items by <code>quantity &le; minThreshold</code>. The root element is always the item nearest depletion in <strong>O(1) peek time</strong> for restock alerts.</p>
+                </div>
+                <div class="panel-box">
+                    <h4>3. FIFO Queue (Order Processing)</h4>
+                    <p>Queues incoming customer orders in arrival order. Enqueue and Dequeue operations take <strong>O(1) time</strong>, preventing unfair order skipping.</p>
+                </div>
+                <div class="panel-box">
+                    <h4>4. LIFO Stack (Transaction Undo)</h4>
+                    <p>Pushes stock state before every modification. Allows warehouse operators to safely <strong>Undo</strong> mistakes in <strong>O(1) pop time</strong>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Add Product Modal -->
+        <div class="modal-overlay" id="addProductModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Add New Inventory Product</h3>
+                    <button class="close-modal-btn" id="closeAddModalBtn">&times;</button>
+                </div>
+                <form id="addProductForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Product ID (SKU)</label>
+                            <input type="text" id="newProdId" required placeholder="e.g., PRD111">
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <input type="text" id="newProdCategory" required placeholder="e.g., Electronics">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Product Name</label>
+                        <input type="text" id="newProdName" required placeholder="e.g., 4K Ultra HD Monitor">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Initial Quantity</label>
+                            <input type="number" id="newProdQty" min="0" required placeholder="e.g., 10">
+                        </div>
+                        <div class="form-group">
+                            <label>Safety Threshold</label>
+                            <input type="number" id="newProdThreshold" min="1" required placeholder="e.g., 5">
+                        </div>
+                        <div class="form-group">
+                            <label>Price (&#8377;)</label>
+                            <input type="number" id="newProdPrice" min="1" step="0.5" required placeholder="e.g., 14999">
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" id="cancelAddBtn">Cancel</button>
+                        <button type="submit" class="btn-primary">Save to Catalog</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Place Order Modal -->
+        <div class="modal-overlay" id="placeOrderModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Enqueue New Customer Order (FIFO)</h3>
+                    <button class="close-modal-btn" id="closeOrderModalBtn">&times;</button>
+                </div>
+                <form id="placeOrderForm">
+                    <div class="form-group">
+                        <label>Customer Name</label>
+                        <input type="text" id="orderCustomerName" required placeholder="e.g., Amit Patel">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Select Product</label>
+                            <select id="orderProductSelect" required class="form-select">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Order Quantity</label>
+                            <input type="number" id="orderQuantity" min="1" value="1" required>
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" id="cancelOrderBtn">Cancel</button>
+                        <button type="submit" class="btn-primary">Add to FIFO Queue</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <footer class="app-footer">
+            <p>Rungta International Skills University &bull; School of Computer Science &amp; Engineering &bull; Session 2026-27</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
