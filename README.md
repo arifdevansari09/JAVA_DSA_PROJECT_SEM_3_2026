@@ -25,6 +25,20 @@ A full-stack inventory and order fulfillment management application built with *
 
 ## 🚀 Getting Started
 
+### Console Product Inventory Search (PS 45)
+This standalone Java console program implements the assignment's add, display, ID lookup, and binary name-search cases. It stores records in an `ArrayList`, uses a `HashMap` for ID lookup, keeps the list sorted by name with manual insertion logic, and saves data to `inventory.txt` when exiting.
+
+Run it from the repository root with Java 21 in PowerShell:
+```powershell
+New-Item -ItemType Directory -Force .\out | Out-Null
+javac -d .\out .\src\main\java\com\rungta\inventory\ProductInventorySearch.java
+java -cp .\out com.rungta.inventory.ProductInventorySearch
+```
+
+For one-click run in VS Code, install the recommended Extension Pack for Java, open `ProductInventorySearch.java`, and click **Run** above `main`. The **Run Product Inventory Search** configuration is also available under **Run and Debug**.
+
+The first added product receives ID `PR101`. Choose option 5 to save and exit. An optional file path can be supplied as the first argument when running the program.
+
 ### 1. Direct Web Dashboard (Instant Run)
 To run the interactive frontend demo without any build setup:
 - Navigate to `src/main/resources/static/` and open `index.html` in Google Chrome, Microsoft Edge, or Mozilla Firefox.

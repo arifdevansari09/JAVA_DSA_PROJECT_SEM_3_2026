@@ -1,0 +1,6 @@
+cd "C:\Users\hp\Desktop\omni route\JAVA_DSA_PROJECT_SEM_3_2026"
+
+New-Item -ItemType Directory -Force .\out | Out-Null
+javac -d .\out .\src\main\java\com\rungta\inventory\ProductInventorySearch.java
+
+java -cp .\out com.rungta.inventory.ProductInventorySearch

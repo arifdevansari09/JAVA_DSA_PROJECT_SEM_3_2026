@@ -1,4 +1,6 @@
 target/
+out/
+*.class
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -27,7 +29,9 @@ target/
 /nbproject/build-impl.xml
 
 ### VS Code ###
-.vscode/
+.vscode/*
+!.vscode/launch.json
+!.vscode/extensions.json
 
 ### OS & Logs ###
 *.log
